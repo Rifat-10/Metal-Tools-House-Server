@@ -4,7 +4,7 @@ const cors = require("cors");
 const { MongoClient, ServerApiVersion } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
-
+const ObjectId = require("mongodb").ObjectId;
 
 
 
@@ -25,13 +25,27 @@ async function run() {
         await client.connect();
         const itemCollection = client.db("metalToolsHouse").collection("tools");
         const reviewCollection = client.db("sportSwear").collection("review");
+        const orderCollection = client.db("metalToolsHouse").collection("order");
+        const profileCollection =client.db("metalToolsHouse").collection("profile")
         app.get('/tools', async(req, res) => {
             const query = {};
             const cursor = itemCollection.find(query);
             const tool = await cursor.toArray();
             res.send(tool);
         })
+        app.get("/tools/:id", async (req, res) => {
+            const toolId = req.params.id;
+            const query = { _id: ObjectId(toolId) };
+            const tool = await itemCollection.findOne(query);
+            res.send(tool);
+          });
 
+          app.post("/order", async (req, res) => {
+            const placeOrder = req.body;
+            const theOrder = await orderCollection.insertOne(placeOrder);
+            res.send(theOrder);
+          });
+      
           // Loading all the rivews
           app.get('/review', async (req, res) => {
             const query = {};
