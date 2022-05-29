@@ -45,6 +45,16 @@ async function run() {
             const theOrder = await orderCollection.insertOne(placeOrder);
             res.send(theOrder);
           });
+
+          app.get("/myOrders", async (req, res) => {
+            const email = req.query.userEmail;
+            if (email) {
+              const query = { userEmail: email };
+              const cursor = orderCollection.find(query);
+              const products = await cursor.toArray();
+              res.send(products);
+            }
+          });
       
           // Loading all the rivews
           app.get('/review', async (req, res) => {
