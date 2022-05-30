@@ -68,6 +68,12 @@ async function run() {
       const myOrder = await orderCollection.findOne(query);
       res.send(myOrder);
     });
+    app.get("/myOrders/:email", async (req, res) => {
+      const myEmail = req.params.email;
+      const query = { userEmail:myEmail };
+      const myOrder = await orderCollection.findOne(query);
+      res.send(myOrder);
+    });
 
     app.post("/create-payment-intent", async (req, res) => {
       const product = req.body;
